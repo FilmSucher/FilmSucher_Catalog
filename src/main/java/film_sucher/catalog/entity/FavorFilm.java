@@ -37,5 +37,4 @@ public class FavorFilm {
     // column as normal column
     @Column(name="addedAt")
     private LocalDateTime addedAt =  LocalDateTime.now();
-    
 }

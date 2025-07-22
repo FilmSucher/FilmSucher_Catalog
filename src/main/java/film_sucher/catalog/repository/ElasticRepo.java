@@ -5,11 +5,14 @@ import java.util.Optional;
 
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
 
-import film_sucher.catalog.entity.Film;
+import film_sucher.catalog.entity.ElasticFilm;
 
-public interface ElasticRepo extends ElasticsearchRepository<Film, Long>{
+@Repository
+public interface ElasticRepo extends ElasticsearchRepository<ElasticFilm, Long>{
     
     @Query("SELECT * FROM Films")
-    public Optional<List<Long>> findByPrompt(String prompt);
+    Optional<List<ElasticFilm>> findByPrompt(String prompt);
+    // List<ProductDocument> findByNameContainingOrDescriptionContaining(String name, String description);
 }

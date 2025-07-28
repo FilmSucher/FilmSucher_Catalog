@@ -26,15 +26,19 @@ public class FavorFilm {
     // alias for FavorFilmId
     @MapsId("filmId")
     // column as reference
-    @JoinColumn(name = "filmId")
-    private Long filmId;
+    @JoinColumn(name = "film_id")
+    private Film film;
 
     @ManyToOne
     @MapsId("userId")
-    @JoinColumn(name = "userId")
-    private Long userId;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // column as normal column
-    @Column(name="addedAt")
-    private LocalDateTime addedAt =  LocalDateTime.now();
+    @Column(name="added_at")
+    private LocalDateTime addedAt = LocalDateTime.now();
 }
+
+// надо убедиться что именно будет в колонке
+// и если это прям фильм как фильм, то в сервисе убрать блок запроса в базу фильмов
+// кроме того создать мок эластика в тестах и добавить в тест контекста

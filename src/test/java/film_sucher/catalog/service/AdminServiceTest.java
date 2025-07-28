@@ -30,7 +30,7 @@ public class AdminServiceTest {
     private final String title = "Testfilm";
     private final Long id = 1L;
     private final String description = "Description for Testfilm.";
-    private final String ganre = "TestGanre";
+    private final String genre = "Testgenre";
     private final String country = "USA";
     private Film filmInDB;
     private Film filmFromDB;
@@ -48,14 +48,14 @@ public class AdminServiceTest {
         filmInDB = new Film();
         filmInDB.setTitle(title);
         filmInDB.setDescription(description);
-        filmInDB.setGanre(ganre);
+        filmInDB.setGenre(genre);
         filmInDB.setCountry(country);
 
         filmFromDB = new Film();
         filmFromDB.setId(id);
         filmFromDB.setTitle(title);
         filmFromDB.setDescription(description);
-        filmFromDB.setGanre(ganre);
+        filmFromDB.setGenre(genre);
         filmFromDB.setCountry(country);
     }
 
@@ -74,7 +74,7 @@ public class AdminServiceTest {
         ElasticFilm saved = captor.getValue();
         assertEquals(id, saved.getFilmId());
         assertEquals(title, saved.getFilmTitle());
-        assertEquals(ganre, saved.getGanre());
+        assertEquals(genre, saved.getGenre());
         assertEquals(description, saved.getFilmDescription());
         assertEquals(country, saved.getCountry());
     }
@@ -118,7 +118,7 @@ public class AdminServiceTest {
         ElasticFilm saved = captor.getValue();
         assertEquals(id, saved.getFilmId());
         assertEquals(title, saved.getFilmTitle());
-        assertEquals(ganre, saved.getGanre());
+        assertEquals(genre, saved.getGenre());
         assertEquals(description, saved.getFilmDescription());
         assertEquals(country, saved.getCountry());
     }

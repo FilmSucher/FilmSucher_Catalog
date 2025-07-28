@@ -3,6 +3,7 @@ package film_sucher.catalog.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -41,16 +42,9 @@ public class FavorsService {
 
         if (favorFilms.isEmpty()) throw new EntityNotFoundException("MyList is empty");
         // get films IDs
-        List<Long> favorsId = new ArrayList<>();
-        for (FavorFilm favorFilm : favorFilms){
-            favorsId.add(favorFilm.getFilmId());
-        }
-        // get films und return
         List<Film> result = new ArrayList<>();
-        try {
-            result = (List<Film>) suchRepo.findAllById(favorsId);
-        } catch (DataAccessException e) {
-            throw new DatabaseException("Error receiving movies from PostgresSQL", e);
+        for (FavorFilm favorFilm : favorFilms){
+            result.add(favorFilm.getFilm());
         }
         return result;
     }
@@ -66,9 +60,21 @@ public class FavorsService {
         //     throw new DatabaseException("Error save movie in MyList in PostgresSQL", e);
         // }
 
-        
+        Film film;
+        Optional<Film> opFilm;
         try {
-            favorsRepo.save(new FavorFilm(new FavorFilmId(user.getId(), filmId), user.getId(), filmId, LocalDateTime.now()));
+            opFilm = suchRepo.findById(filmId);
+        } catch (DataAccessException e) {
+             throw new DatabaseException("Error receiving movie by Id from PostgreSQL", e);
+        }
+        if (opFilm.isPresent()){
+            film = opFilm.get();
+        } else {
+            throw new DatabaseException("Movie with id: " + filmId +" not exists.", null);
+        }
+
+        try {
+            favorsRepo.save(new FavorFilm(new FavorFilmId(user.getId(), filmId), film, user, LocalDateTime.now()));
         } catch (DataIntegrityViolationException  e) {
             // ignorieren, this Film exist in DB
         } catch (DataAccessException e) {

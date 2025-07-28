@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    stages {
+	
+		stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+		
+        stage('Build') {
+            steps {
+                sh './mvnw clean compile'
+            }
+        }
+		
+		stage('Test') {
+            steps {
+                sh './mvnw test'
+            }
+			post {
+                always {
+                    junit "/target/surefire-reports/*.xml"
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh './mvnw package'
+            }
+        }
+		
+		stage('Copy to Ansible container') {
+            steps {
+                sh '''
+                    docker cp /target/*.jar ansible:/ansible/playbooks/roles/deploy-backend-catalog/files/app.jar
+                '''
+            }
+        }
+		
+		stage('Deploy via Ansible') {
+            steps {
+                sh '''
+                    docker exec ansible \
+                      ansible-playbook -i inventory.ini playbooks/deploy-backend-catalog.yml -v
+                '''
+            }
+        }
+    }
+	
+	post {
+        failure {
+            echo 'Build or deploy failed.'
+        }
+        success {
+            echo 'Catalog deployed successfully.'
+        }
+    }
+}

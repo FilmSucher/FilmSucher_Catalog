@@ -19,6 +19,6 @@ public class ElasticFilm {
     private String filmTitle;
     // automatish default settings
     private String filmDescription;
-    private String ganre;
+    private String genre;
     private String country;
 }

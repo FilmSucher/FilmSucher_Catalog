@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ActiveProfiles;
 
 import film_sucher.catalog.entity.ElasticFilm;
 import film_sucher.catalog.entity.Film;
@@ -28,15 +29,16 @@ import film_sucher.catalog.repository.SqlSuchRepo;
 import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 public class SuchServiceTest {
     private final String prompt = "Test Prompt";
     private final String title = "Testfilm";
     private final Long id = 1L;
     private final String description = "Description for Testfilm.";
-    private final String ganre = "TestGanre";
+    private final String genre = "TestGenre";
     private final String country = "USA";
     private Film film;
-    private final ElasticFilm elasticFilm = new ElasticFilm(id, title, description, ganre, country);
+    private final ElasticFilm elasticFilm = new ElasticFilm(id, title, description, genre, country);
 
     @Mock
     private SqlSuchRepo sqlRepo;
@@ -52,7 +54,7 @@ public class SuchServiceTest {
         film.setId(id);
         film.setTitle(title);
         film.setDescription(description);
-        film.setGanre(ganre);
+        film.setGenre(genre);
         film.setCountry(country);
     }
 
@@ -76,7 +78,7 @@ public class SuchServiceTest {
         assertEquals(id, result.get(0).getId());
         assertEquals(title, result.get(0).getTitle());
         assertEquals(description, result.get(0).getDescription());
-        assertEquals(ganre, result.get(0).getGanre());
+        assertEquals(genre, result.get(0).getGenre());
         assertEquals(country, result.get(0).getCountry());
     }
     @Test
@@ -108,7 +110,7 @@ public class SuchServiceTest {
         assertEquals(id, result.getId());
         assertEquals(title, result.getTitle());
         assertEquals(description, result.getDescription());
-        assertEquals(ganre, result.getGanre());
+        assertEquals(genre, result.getGenre());
         assertEquals(country, result.getCountry());
     }
 

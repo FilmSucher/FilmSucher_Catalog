@@ -42,7 +42,7 @@ public class AdminService {
                 savedFilm.getId(), 
                 savedFilm.getTitle(), 
                 savedFilm.getDescription(), 
-                savedFilm.getGanre(), 
+                savedFilm.getGenre(), 
                 savedFilm.getCountry()
                 )
             ); 
@@ -74,7 +74,7 @@ public class AdminService {
                 updatedFilm.getId(), 
                 updatedFilm.getTitle(), 
                 updatedFilm.getDescription(), 
-                updatedFilm.getGanre(), 
+                updatedFilm.getGenre(), 
                 updatedFilm.getCountry()
                 )
             ); 

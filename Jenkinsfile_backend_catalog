@@ -11,12 +11,14 @@ pipeline {
 		
         stage('Build') {
             steps {
+				sh 'chmod +x ./mvnw'
                 sh './mvnw clean compile'
             }
         }
 		
 		stage('Test') {
             steps {
+				sh 'chmod +x ./mvnw'
                 sh './mvnw test'
             }
 			post {
@@ -28,6 +30,7 @@ pipeline {
 
         stage('Package') {
             steps {
+				sh 'chmod +x ./mvnw'
                 sh './mvnw package'
             }
         }
@@ -35,7 +38,8 @@ pipeline {
 		stage('Copy to Ansible container') {
             steps {
                 sh '''
-                    docker cp /target/*.jar ansible:/ansible/playbooks/roles/deploy-backend-catalog/files/app.jar
+                    rm -rf /shared/backend_catalog/app.jar
+					cp -r /target/*.jar /shared/backend_catalog/app.jar
                 '''
             }
         }

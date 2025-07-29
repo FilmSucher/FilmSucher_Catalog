@@ -23,7 +23,7 @@ pipeline {
             }
 			post {
                 always {
-                    junit "/target/surefire-reports/*.xml"
+                    junit "**/target/surefire-reports/*.xml"
                 }
             }
         }
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 sh '''
                     rm -rf /shared/backend_catalog/app.jar
-					cp -r /target/*.jar /shared/backend_catalog/app.jar
+					cp -r target/*.jar /shared/backend_catalog/app.jar
                 '''
             }
         }

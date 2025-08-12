@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "films_seq_gen")
-    @SequenceGenerator(name = "films_seq_gen", sequenceName = "public.film_seq", allocationSize = 1)
+    @SequenceGenerator(name = "films_seq_gen", sequenceName = "public.films_seq", allocationSize = 1)
     private Long id;
     private String title;
     private int year;

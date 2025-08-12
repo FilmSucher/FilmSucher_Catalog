@@ -11,11 +11,13 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="Favorites")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FavorFilm {
     // composite key entity reference
     @EmbeddedId

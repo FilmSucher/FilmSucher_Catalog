@@ -1,5 +1,7 @@
 package film_sucher.catalog.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,5 +29,5 @@ public class Film {
     private String description;
     @Column(name="bild_url")
     private String bildUrl;
-    private long rating;
+    private BigDecimal rating;
 }

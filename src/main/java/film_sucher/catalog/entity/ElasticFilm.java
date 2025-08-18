@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Document(indexName="Films")
+@Document(indexName="films")
 public class ElasticFilm {
     @Id
     private Long filmId;

@@ -54,7 +54,7 @@ public class JWTFilter extends OncePerRequestFilter{
             // get props
             // id and name in principal    
             Map<String,Object> principal = new HashMap<>();
-            principal.put("id", (Long) claims.get("id"));
+            principal.put("id", (Integer) claims.get("id"));
             principal.put("username", claims.getSubject());
 
             // roles in authorities

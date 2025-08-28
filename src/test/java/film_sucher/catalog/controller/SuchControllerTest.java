@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import film_sucher.catalog.dto.ApiResponseDTO;
 import film_sucher.catalog.entity.Film;
 import film_sucher.catalog.exceptions.DatabaseException;
 import film_sucher.catalog.exceptions.ElasticException;
@@ -74,7 +75,12 @@ public class SuchControllerTest {
         ResponseEntity<?> result = controller.getList(prompt);
         
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error receiving movie from DB", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error receiving movie from DB", body.getMessage());
+        assertTrue(body.getE() instanceof DatabaseException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -83,7 +89,12 @@ public class SuchControllerTest {
         ResponseEntity<?> result = controller.getList(prompt);
         
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error receiving movie from Elastic", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error receiving movie from Elastic", body.getMessage());
+        assertTrue(body.getE() instanceof ElasticException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -92,7 +103,12 @@ public class SuchControllerTest {
         ResponseEntity<?> result = controller.getList(prompt);
         
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     // get one
@@ -113,7 +129,12 @@ public class SuchControllerTest {
         ResponseEntity<?> result = controller.getFilm(id);
         
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-        assertEquals("Not Found Error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Not Found Error", body.getMessage());
+        assertTrue(body.getE() instanceof EntityNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND, body.getStatus());
     }
 
     @Test
@@ -122,7 +143,12 @@ public class SuchControllerTest {
         ResponseEntity<?> result = controller.getFilm(id);
         
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error receiving movie from DB", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error receiving movie from DB", body.getMessage());
+        assertTrue(body.getE() instanceof DatabaseException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -131,6 +157,11 @@ public class SuchControllerTest {
         ResponseEntity<?> result = controller.getFilm(id);
         
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 }

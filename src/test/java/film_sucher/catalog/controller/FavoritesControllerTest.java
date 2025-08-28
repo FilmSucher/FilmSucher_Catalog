@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import film_sucher.catalog.dto.ApiResponseDTO;
 import film_sucher.catalog.entity.Film;
 import film_sucher.catalog.entity.User;
 import film_sucher.catalog.exceptions.DatabaseException;
@@ -78,7 +79,12 @@ public class FavoritesControllerTest {
         ResponseEntity<?> result = controller.getFavors();
         
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error receiving movie from MyList", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error receiving movie from MyList", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -87,7 +93,12 @@ public class FavoritesControllerTest {
         ResponseEntity<?> result = controller.getFavors();
         
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     // add film
@@ -98,7 +109,12 @@ public class FavoritesControllerTest {
         ResponseEntity<?> result = controller.addFavors(id);
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertEquals(null, result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Movie added to favorites", body.getMessage());
+        assertEquals(null, body.getE());
+        assertEquals(HttpStatus.CREATED, body.getStatus());
     }
 
     @Test
@@ -106,7 +122,12 @@ public class FavoritesControllerTest {
         doThrow(new DatabaseException("DB Error", new RuntimeException())).when(service).addFavorsFilms(user, id);
         ResponseEntity<?> result = controller.addFavors(id);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error adding movie in MyList", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error adding movie in MyList", body.getMessage());
+        assertTrue(body.getE() instanceof DatabaseException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -114,7 +135,12 @@ public class FavoritesControllerTest {
         doThrow(new RuntimeException("Error!")).when(service).addFavorsFilms(user, id);
         ResponseEntity<?> result = controller.addFavors(id);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     // del film
@@ -125,7 +151,12 @@ public class FavoritesControllerTest {
         ResponseEntity<?> result = controller.delFavors(id);
 
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-        assertEquals(null, result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Movie removed from favorites", body.getMessage());
+        assertEquals(null, body.getE());
+        assertEquals(HttpStatus.NO_CONTENT, body.getStatus());
     }
 
     @Test
@@ -133,7 +164,12 @@ public class FavoritesControllerTest {
         doThrow(new EntityNotFoundException("NotFound Error", new RuntimeException())).when(service).delFavorsFilms(user, id);
         ResponseEntity<?> result = controller.delFavors(id);
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-        assertEquals("NotFound Error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Not Found Error", body.getMessage());
+        assertTrue(body.getE() instanceof EntityNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND, body.getStatus());
     }
 
     @Test
@@ -141,7 +177,12 @@ public class FavoritesControllerTest {
         doThrow(new DatabaseException("DB Error", new RuntimeException())).when(service).delFavorsFilms(user, id);
         ResponseEntity<?> result = controller.delFavors(id);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error deleting movie from MyList", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error deleting movie from MyList", body.getMessage());
+        assertTrue(body.getE() instanceof DatabaseException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -149,6 +190,11 @@ public class FavoritesControllerTest {
         doThrow(new RuntimeException("Error!")).when(service).delFavorsFilms(user, id);
         ResponseEntity<?> result = controller.delFavors(id);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 }

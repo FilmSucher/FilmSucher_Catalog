@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import film_sucher.catalog.dto.ApiResponseDTO;
 import film_sucher.catalog.entity.Film;
 import film_sucher.catalog.entity.User;
 import film_sucher.catalog.exceptions.DatabaseException;
@@ -57,9 +58,9 @@ public class FavoritesController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ArrayList<>());
         } catch (DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error receiving movie from MyList");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error receiving movie from MyList", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -74,11 +75,11 @@ public class FavoritesController {
         User user = jwtUtil.getUserFromToken();
         try {
             service.addFavorsFilms(user, id);
-            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDTO("Movie added to favorites", null, HttpStatus.CREATED));
         } catch (DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error adding movie in MyList");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error adding movie in MyList", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -93,13 +94,13 @@ public class FavoritesController {
         User user = jwtUtil.getUserFromToken();
         try {
             service.delFavorsFilms(user, id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseDTO("Movie removed from favorites", null, HttpStatus.NO_CONTENT));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDTO("Not Found Error", e, HttpStatus.NOT_FOUND));
         } catch (DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error deleting movie from MyList");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error deleting movie from MyList", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }

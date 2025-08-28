@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import film_sucher.catalog.dto.ApiResponseDTO;
 import film_sucher.catalog.entity.Film;
 import film_sucher.catalog.exceptions.DatabaseException;
 import film_sucher.catalog.exceptions.ElasticException;
@@ -47,11 +48,11 @@ public class SuchController {
             }
             return ResponseEntity.status(HttpStatus.OK).body(films);
         } catch(DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error receiving movie from DB");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Error receiving movie from DB", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (ElasticException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error receiving movie from Elastic");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Error receiving movie from Elastic", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -67,11 +68,11 @@ public class SuchController {
             Film film = service.findFilm(filmId);
             return ResponseEntity.status(HttpStatus.OK).body(film);
         } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDTO("Not Found Error", e, HttpStatus.NOT_FOUND));
         } catch(DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error receiving movie from DB");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Error receiving movie from DB", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }

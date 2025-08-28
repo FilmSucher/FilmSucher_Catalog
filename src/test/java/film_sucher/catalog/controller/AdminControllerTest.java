@@ -1,6 +1,8 @@
 package film_sucher.catalog.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import film_sucher.catalog.dto.ApiResponseDTO;
 import film_sucher.catalog.entity.Film;
 import film_sucher.catalog.exceptions.DatabaseException;
 import film_sucher.catalog.exceptions.ElasticException;
@@ -48,7 +51,12 @@ public class AdminControllerTest {
         ResponseEntity<?> result = controller.addFilm(film);
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertEquals("Film successfully added", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Film successfully added", body.getMessage());
+        assertEquals(null, body.getE());
+        assertEquals(HttpStatus.CREATED, body.getStatus());
     }
 
     @Test
@@ -56,7 +64,12 @@ public class AdminControllerTest {
         doThrow(new DatabaseException("DB Error", new RuntimeException())).when(service).addFilm(film);
         ResponseEntity<?> result = controller.addFilm(film);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error saving movie to DB", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error saving movie to DB", body.getMessage());
+        assertTrue(body.getE() instanceof DatabaseException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -64,7 +77,12 @@ public class AdminControllerTest {
         doThrow(new ElasticException("Elastic Error", new RuntimeException())).when(service).addFilm(film);
         ResponseEntity<?> result = controller.addFilm(film);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error saving movie to Elastic", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error saving movie to Elastic", body.getMessage());
+        assertTrue(body.getE() instanceof ElasticException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -72,7 +90,12 @@ public class AdminControllerTest {
         doThrow(new RuntimeException("Error!")).when(service).addFilm(film);
         ResponseEntity<?> result = controller.addFilm(film);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     // modify film
@@ -83,7 +106,12 @@ public class AdminControllerTest {
         ResponseEntity<?> result = controller.changeFilm(id, film);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals("Film successfully changed", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Film successfully changed", body.getMessage());
+        assertEquals(null, body.getE());
+        assertEquals(HttpStatus.OK, body.getStatus());
     }
 
     @Test
@@ -91,7 +119,13 @@ public class AdminControllerTest {
         doThrow(new EntityNotFoundException("NotFound Error", new RuntimeException())).when(service).changeFilm(id, film);
         ResponseEntity<?> result = controller.changeFilm(id, film);
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-        assertEquals("NotFound Error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Not Found Error", body.getMessage());
+        assertTrue(body.getE() instanceof EntityNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND, body.getStatus());
+
     }
 
     @Test
@@ -99,7 +133,12 @@ public class AdminControllerTest {
         doThrow(new DatabaseException("DB Error", new RuntimeException())).when(service).changeFilm(id, film);
         ResponseEntity<?> result = controller.changeFilm(id, film);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error updating movie to DB", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error updating movie to DB", body.getMessage());
+        assertTrue(body.getE() instanceof DatabaseException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -107,7 +146,12 @@ public class AdminControllerTest {
         doThrow(new ElasticException("Elastic Error", new RuntimeException())).when(service).changeFilm(id, film);
         ResponseEntity<?> result = controller.changeFilm(id, film);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error updating movie to Elastic", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error updating movie to Elastic", body.getMessage());
+        assertTrue(body.getE() instanceof ElasticException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -115,7 +159,12 @@ public class AdminControllerTest {
         doThrow(new RuntimeException("Error!")).when(service).changeFilm(id, film);
         ResponseEntity<?> result = controller.changeFilm(id, film);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     // delete film
@@ -126,7 +175,12 @@ public class AdminControllerTest {
         ResponseEntity<?> result = controller.deleteFilm(id);
 
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-        assertEquals("Film successfully deleted", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Film successfully deleted", body.getMessage());
+        assertEquals(null, body.getE());
+        assertEquals(HttpStatus.NO_CONTENT, body.getStatus());
     }
 
     @Test
@@ -134,7 +188,12 @@ public class AdminControllerTest {
         doThrow(new EntityNotFoundException("NotFound Error", new RuntimeException())).when(service).delFilm(id);
         ResponseEntity<?> result = controller.deleteFilm(id);
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-        assertEquals("NotFound Error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Not Found Error", body.getMessage());
+        assertTrue(body.getE() instanceof EntityNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND, body.getStatus());
     }
 
     @Test
@@ -142,7 +201,12 @@ public class AdminControllerTest {
         doThrow(new DatabaseException("DB Error", new RuntimeException())).when(service).delFilm(id);
         ResponseEntity<?> result = controller.deleteFilm(id);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error deleting movie to DB", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error deleting movie to DB", body.getMessage());
+        assertTrue(body.getE() instanceof DatabaseException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -150,7 +214,12 @@ public class AdminControllerTest {
         doThrow(new ElasticException("Elastic Error", new RuntimeException())).when(service).delFilm(id);
         ResponseEntity<?> result = controller.deleteFilm(id);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error deleting movie to Elastic", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Error deleting movie to Elastic", body.getMessage());
+        assertTrue(body.getE() instanceof ElasticException);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 
     @Test
@@ -158,6 +227,11 @@ public class AdminControllerTest {
         doThrow(new RuntimeException("Error!")).when(service).delFilm(id);
         ResponseEntity<?> result = controller.deleteFilm(id);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Unexpected error", result.getBody());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("Unexpected error", body.getMessage());
+        assertTrue(body.getE() instanceof Exception);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, body.getStatus());
     }
 }

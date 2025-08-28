@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import film_sucher.catalog.dto.ApiResponseDTO;
 import film_sucher.catalog.entity.Film;
 import film_sucher.catalog.exceptions.DatabaseException;
 import film_sucher.catalog.exceptions.ElasticException;
@@ -43,13 +44,13 @@ public class AdminController {
     public ResponseEntity<?> addFilm(@RequestBody Film newFilm){
         try {
             service.addFilm(newFilm);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Film successfully added");
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDTO("Film successfully added", null, HttpStatus.CREATED));
         } catch (DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error saving movie to DB");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error saving movie to DB", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (ElasticException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error saving movie to Elastic");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error saving movie to Elastic", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     } 
 
@@ -64,15 +65,15 @@ public class AdminController {
     public ResponseEntity<?> changeFilm(@PathVariable("id") Long filmId, @RequestBody Film newFilm){
         try {
             service.changeFilm(filmId, newFilm);
-            return ResponseEntity.status(HttpStatus.OK).body("Film successfully changed");
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDTO("Film successfully changed", null, HttpStatus.OK));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDTO("Not Found Error", e, HttpStatus.NOT_FOUND));
         } catch (DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error updating movie to DB");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error updating movie to DB", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (ElasticException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error updating movie to Elastic");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error updating movie to Elastic", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     } 
 
@@ -87,15 +88,15 @@ public class AdminController {
     public ResponseEntity<?> deleteFilm(@PathVariable("id") Long filmId){
          try {
             service.delFilm(filmId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Film successfully deleted");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseDTO("Film successfully deleted", null, HttpStatus.NO_CONTENT));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDTO("Not Found Error", e, HttpStatus.NOT_FOUND));
         } catch (DatabaseException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error deleting movie to DB");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error deleting movie to DB", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (ElasticException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body("Error deleting movie to Elastic");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error deleting movie to Elastic", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDTO("Unexpected error", e, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }

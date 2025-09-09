@@ -32,6 +32,7 @@ import jakarta.persistence.EntityNotFoundException;
 @ActiveProfiles("test")
 public class SuchServiceTest {
     private final String prompt = "Test Prompt";
+    private final String emptyPrompt = "";
     private final String title = "Testfilm";
     private final Long id = 1L;
     private final String description = "Description for Testfilm.";
@@ -60,6 +61,31 @@ public class SuchServiceTest {
 
     // get list
     // ---------------------------------------------------------------------------
+    @Test
+    public void getSuccessfullGetAll(){
+        when(sqlRepo.findAll()).thenReturn(List.of(film));
+
+        List<Film> result = service.findFilms(emptyPrompt);
+        assertEquals(1, result.size());
+
+        verify(sqlRepo).findAll();
+        
+        assertEquals(id, result.get(0).getId());
+        assertEquals(title, result.get(0).getTitle());
+        assertEquals(description, result.get(0).getDescription());
+        assertEquals(genre, result.get(0).getGenre());
+        assertEquals(country, result.get(0).getCountry());
+    }
+    
+    @Test
+    public void getDBErrorGetAll(){
+        doThrow(new DataAccessException("PostgreSQL Error"){}).when(sqlRepo).findAll();
+        DatabaseException ex = assertThrows(DatabaseException.class, () ->
+            service.findFilms(emptyPrompt));
+            
+        assertEquals("Error getting movies from PostgresSQL", ex.getMessage());
+    }
+
     @Test
     public void getSuccessfullGetList(){
         when(elasticSuchService.search(prompt)).thenReturn(List.of(elasticFilm));

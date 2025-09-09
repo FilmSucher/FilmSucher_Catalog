@@ -29,28 +29,39 @@ public class SuchService {
     }
 
     public List<Film> findFilms(String prompt){
-        List<ElasticFilm> elasticFilms;
-        try{
-            elasticFilms = elasticSuchService.search(prompt);
-        }
-        catch(RuntimeException e){
-            throw new ElasticException("Error getting movies from ElasticSearch", e);
-        }
-        List<Long> ids = new ArrayList<>();
-        if (!elasticFilms.isEmpty()){
-            for(ElasticFilm film : elasticFilms){
-                ids.add(film.getFilmId());
+        if ("".equals(prompt)){
+            List<Film> results = new ArrayList<>();
+            try {
+                    results = (List<Film>) sqlRepo.findAll();
+            } catch (DataAccessException e) {
+                throw new DatabaseException("Error getting movies from PostgresSQL", e);
             }
+            return results;
         }
-        List<Film> results = new ArrayList<>();
-        try {
-            if (!ids.isEmpty()){
-                results = (List<Film>) sqlRepo.findAllById(ids);
+        else{
+            List<ElasticFilm> elasticFilms;
+            try{
+                elasticFilms = elasticSuchService.search(prompt);
             }
-        } catch (DataAccessException e) {
-            throw new DatabaseException("Error getting movies from PostgresSQL", e);
+            catch(RuntimeException e){
+                throw new ElasticException("Error getting movies from ElasticSearch", e);
+            }
+            List<Long> ids = new ArrayList<>();
+            if (!elasticFilms.isEmpty()){
+                for(ElasticFilm film : elasticFilms){
+                    ids.add(film.getFilmId());
+                }
+            }
+            List<Film> results = new ArrayList<>();
+            try {
+                if (!ids.isEmpty()){
+                    results = (List<Film>) sqlRepo.findAllById(ids);
+                }
+            } catch (DataAccessException e) {
+                throw new DatabaseException("Error getting movies from PostgresSQL", e);
+            }
+            return results;
         }
-        return results;
     }
 
     public Film findFilm(Long id){

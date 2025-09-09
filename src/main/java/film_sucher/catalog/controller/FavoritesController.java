@@ -40,6 +40,7 @@ public class FavoritesController {
         this.jwtUtil = jwtUtil;
     }
 
+    //-----------------------------------------------------------------------
     //get all
     @Operation(summary = "Get Favorites", description = "Get all movies from favorites list.")
     @ApiResponses(value = {
@@ -64,6 +65,8 @@ public class FavoritesController {
         }
     }
 
+    //-----------------------------------------------------------------------
+    //post
     @Operation(summary = "Add Movie", description = "Add movie to favorites")
     @ApiResponses(value = {
         @ApiResponse(responseCode="201", description="Movie added to favorites"),
@@ -83,6 +86,8 @@ public class FavoritesController {
         }
     }
 
+    //-----------------------------------------------------------------------
+    //del
     @Operation(summary = "Delete Movie", description = "Remove movie from favorites")
     @ApiResponses(value = {
         @ApiResponse(responseCode="201", description="Movie removed from favorites"),

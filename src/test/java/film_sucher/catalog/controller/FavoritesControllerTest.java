@@ -146,7 +146,7 @@ public class FavoritesControllerTest {
     // del film
     // ---------------------------------------------------------------
     @Test
-    public void getSuccessfullDel(){
+    public void getSuccessfullDel(){    
         doNothing().when(service).delFavorsFilms(user, id);
         ResponseEntity<?> result = controller.delFavors(id);
 

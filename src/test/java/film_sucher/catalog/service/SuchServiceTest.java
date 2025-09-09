@@ -63,12 +63,12 @@ public class SuchServiceTest {
     // ---------------------------------------------------------------------------
     @Test
     public void getSuccessfullGetAll(){
-        when(sqlRepo.findAll()).thenReturn(List.of(film));
+        when(sqlRepo.findAllByOrderByRatingDesc()).thenReturn(List.of(film));
 
         List<Film> result = service.findFilms(emptyPrompt);
         assertEquals(1, result.size());
 
-        verify(sqlRepo).findAll();
+        verify(sqlRepo).findAllByOrderByRatingDesc();
         
         assertEquals(id, result.get(0).getId());
         assertEquals(title, result.get(0).getTitle());
@@ -79,7 +79,7 @@ public class SuchServiceTest {
     
     @Test
     public void getDBErrorGetAll(){
-        doThrow(new DataAccessException("PostgreSQL Error"){}).when(sqlRepo).findAll();
+        doThrow(new DataAccessException("PostgreSQL Error"){}).when(sqlRepo).findAllByOrderByRatingDesc();
         DatabaseException ex = assertThrows(DatabaseException.class, () ->
             service.findFilms(emptyPrompt));
             

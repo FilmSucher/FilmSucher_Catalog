@@ -68,9 +68,12 @@ public class FavoritesControllerTest {
         ResponseEntity<?> result = controller.getFavors();
         
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-        assertTrue(result.getBody() instanceof List<?>);
-        List<?> body = (List<?>) result.getBody();
-        assertTrue(body.isEmpty());
+        assertTrue(result.getBody() instanceof ApiResponseDTO);
+
+        ApiResponseDTO body = (ApiResponseDTO) result.getBody();
+        assertEquals("No movies in MyList", body.getMessage());
+        assertEquals(null, body.getE());
+        assertEquals(HttpStatus.NO_CONTENT, body.getStatus());
     }
 
     @Test

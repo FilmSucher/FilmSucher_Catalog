@@ -32,7 +32,7 @@ public class SuchService {
         if ("".equals(prompt)){
             List<Film> results = new ArrayList<>();
             try {
-                    results = (List<Film>) sqlRepo.findAll();
+                results = (List<Film>) sqlRepo.findAllByOrderByRatingDesc();
             } catch (DataAccessException e) {
                 throw new DatabaseException("Error getting movies from PostgresSQL", e);
             }

@@ -44,7 +44,7 @@ public class SuchController {
         try{
             List<Film> films = service.findFilms(prompt);
             if (films.isEmpty()){
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(films);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseDTO("No movies for this query", null, HttpStatus.NO_CONTENT));
             }
             return ResponseEntity.status(HttpStatus.OK).body(films);
         } catch(DatabaseException e) {

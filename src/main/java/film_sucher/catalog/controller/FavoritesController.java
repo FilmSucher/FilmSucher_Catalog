@@ -1,6 +1,5 @@
 package film_sucher.catalog.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,7 @@ public class FavoritesController {
             films = service.getAllFavorsFilms(user);
             return ResponseEntity.status(HttpStatus.OK).body(films);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ArrayList<>());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseDTO("No movies in MyList", null, HttpStatus.NO_CONTENT));
         } catch (DatabaseException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR ).body(new ApiResponseDTO("Error receiving movie from MyList", e, HttpStatus.INTERNAL_SERVER_ERROR));
         } catch (Exception e) {
@@ -90,7 +89,7 @@ public class FavoritesController {
     //del
     @Operation(summary = "Delete Movie", description = "Remove movie from favorites")
     @ApiResponses(value = {
-        @ApiResponse(responseCode="201", description="Movie removed from favorites"),
+        @ApiResponse(responseCode="204", description="Movie removed from favorites"),
         @ApiResponse(responseCode="404", description="Movie not found in favorites"),
         @ApiResponse(responseCode="500", description="Error on backend side")
     })

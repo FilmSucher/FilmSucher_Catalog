@@ -72,10 +72,10 @@ public class AdminServiceTest {
         verify(elRepo).save(captor.capture());
 
         ElasticFilm saved = captor.getValue();
-        assertEquals(id, saved.getFilmId());
-        assertEquals(title, saved.getFilmTitle());
+        assertEquals(id, saved.getId());
+        assertEquals(title, saved.getTitle());
         assertEquals(genre, saved.getGenre());
-        assertEquals(description, saved.getFilmDescription());
+        assertEquals(description, saved.getDescription());
         assertEquals(country, saved.getCountry());
     }
 
@@ -116,10 +116,10 @@ public class AdminServiceTest {
         verify(elRepo).save(captor.capture());
 
         ElasticFilm saved = captor.getValue();
-        assertEquals(id, saved.getFilmId());
-        assertEquals(title, saved.getFilmTitle());
+        assertEquals(id, saved.getId());
+        assertEquals(title, saved.getTitle());
         assertEquals(genre, saved.getGenre());
-        assertEquals(description, saved.getFilmDescription());
+        assertEquals(description, saved.getDescription());
         assertEquals(country, saved.getCountry());
     }
 

@@ -13,12 +13,12 @@ import lombok.Data;
 @Document(indexName="films")
 public class ElasticFilm {
     @Id
-    private Long filmId;
+    private Long id;
     
     @Field(type = FieldType.Text, analyzer = "standart")
-    private String filmTitle;
+    private String title;
     // automatish default settings
-    private String filmDescription;
+    private String description;
     private String genre;
     private String country;
 }

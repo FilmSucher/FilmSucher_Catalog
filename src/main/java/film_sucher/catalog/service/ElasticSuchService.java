@@ -50,6 +50,5 @@ public class ElasticSuchService {
             results.add(hit.getContent());
         }
         return results;
-        // return searchHits.get().map(hit -> hit.getContent()).collect(Collectors.toList());
     }
 }

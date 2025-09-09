@@ -49,7 +49,7 @@ public class SuchService {
             List<Long> ids = new ArrayList<>();
             if (!elasticFilms.isEmpty()){
                 for(ElasticFilm film : elasticFilms){
-                    ids.add(film.getFilmId());
+                    ids.add(film.getId());
                 }
             }
             List<Film> results = new ArrayList<>();

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +27,8 @@ public class FavorsService {
     private final SqlFavorsRepo favorsRepo;
     private final SqlSuchRepo suchRepo;
 
+    private static final Logger logger = LoggerFactory.getLogger(FavorsService.class);
+
     @Autowired
     public FavorsService(SqlFavorsRepo favorsRepo, SqlSuchRepo suchRepo){
         this.favorsRepo = favorsRepo;
@@ -36,6 +40,7 @@ public class FavorsService {
         List<FavorFilm> favorFilms = new ArrayList<>();
         try {
             favorFilms = favorsRepo.findByUser(user);
+            logger.info("Favorites movie successfully getted for user: {}", user.getUsername());
         } catch (DataAccessException e) {
             throw new DatabaseException("Error receiving movies from MyList in PostgresSQL", e);
         }
@@ -46,6 +51,8 @@ public class FavorsService {
         for (FavorFilm favorFilm : favorFilms){
             result.add(favorFilm.getFilm());
         }
+        logger.info("Successfully collecting a list of movies from the list of favorites");
+
         return result;
     }
 
@@ -64,17 +71,20 @@ public class FavorsService {
         Optional<Film> opFilm;
         try {
             opFilm = suchRepo.findById(filmId);
+            logger.info("Container with movie with id: {} getted from DB", filmId);
         } catch (DataAccessException e) {
              throw new DatabaseException("Error receiving movie by Id from PostgreSQL", e);
         }
         if (opFilm.isPresent()){
             film = opFilm.get();
+            logger.info("Movie with id: {} found in DB", filmId);
         } else {
-            throw new DatabaseException("Movie with id: " + filmId +" not exists.", null);
+            throw new EntityNotFoundException("Movie with id: " + filmId +" not exists.", null);
         }
 
         try {
             favorsRepo.save(new FavorFilm(new FavorFilmId(user.getId(), filmId), film, user, LocalDateTime.now()));
+            logger.info("Movie with id: {} added in favorites for user: {}", filmId, user.getUsername());
         } catch (DataIntegrityViolationException  e) {
             // ignorieren, this Film exist in DB
         } catch (DataAccessException e) {
@@ -88,7 +98,9 @@ public class FavorsService {
             if (!favorsRepo.existsByUserAndIdFilmId(user, filmId)) throw new EntityNotFoundException("Film is not in MyList");
             // get userId
             Long userId = user.getId();
+            logger.info("UserId getted from user: {}", user.getUsername());
             favorsRepo.deleteByUserIdAndFilmId(userId, filmId);
+            logger.info("Movie with id: {} deleted from favorites for user: {}", filmId, user.getUsername());
         } catch (DataAccessException e) {
             throw new DatabaseException("Error delete movie from MyList in PostgresSQL", e);
         }

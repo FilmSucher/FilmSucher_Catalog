@@ -3,6 +3,8 @@ package film_sucher.catalog.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -19,6 +21,9 @@ import film_sucher.catalog.entity.ElasticFilm;
 @Service
 public class ElasticSuchService {
     private final ElasticsearchOperations elasticsearchOperations;
+
+    private static final Logger logger = LoggerFactory.getLogger(ElasticSuchService.class);
+
     public ElasticSuchService(ElasticsearchOperations elasticsearchOperations){
         this.elasticsearchOperations = elasticsearchOperations;
     }
@@ -39,16 +44,20 @@ public class ElasticSuchService {
         NativeQuery nativeQuery = NativeQuery.builder()
                                     .withQuery(query)
                                     .build();
+        
+        logger.info("Objects and containers builded to query in Elastic");
 
         // Query GO!
         // return container with Films and Metadata
         SearchHits<ElasticFilm> searchHits = elasticsearchOperations.search(nativeQuery, ElasticFilm.class);
+        logger.info("Container with Films and Meta successfully getted from Elastic");
         
         // Parse results
         List<ElasticFilm> results = new ArrayList<>();
         for (SearchHit<ElasticFilm> hit : searchHits){
             results.add(hit.getContent());
         }
+        logger.info("Results from Elastic successfully parsed");
         return results;
     }
 }

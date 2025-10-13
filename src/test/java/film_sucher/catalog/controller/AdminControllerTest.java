@@ -2,7 +2,6 @@ package film_sucher.catalog.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,15 +9,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import film_sucher.catalog.dto.ApiResponseDTO;
 import film_sucher.catalog.entity.Film;
+import film_sucher.catalog.entity.User;
 import film_sucher.catalog.exceptions.DatabaseException;
 import film_sucher.catalog.exceptions.ElasticException;
 import film_sucher.catalog.service.AdminService;
+import film_sucher.catalog.utils.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 
 
@@ -29,9 +31,12 @@ public class AdminControllerTest {
     private final Long id = 1L;
     private final String description = "Description for Testfilm.";
     private Film film;
+    private final User user = new User(1L, "user", User.Role.USER);
     
     @Mock
     private AdminService service;
+    @Mock
+    private JwtUtil jwtUtil;
     
     @InjectMocks
     private AdminController controller;
@@ -41,12 +46,15 @@ public class AdminControllerTest {
         film = new Film();
         film.setTitle(title);
         film.setDescription(description);
+
+        when(jwtUtil.getUserFromToken()).thenReturn(user);
     }
 
     // add film
     // ---------------------------------------------------------------
     @Test
     public void getSuccessfullAdd(){
+        // when(jwtUtil.getUserFromToken()).thenReturn(user);
         doNothing().when(service).addFilm(film);
         ResponseEntity<?> result = controller.addFilm(film);
 

@@ -120,7 +120,7 @@ public class FavorsServiceTest {
     @Test
     public void getDBErrorByOptionalAdd(){
         when(suchRepo.findById(filmId)).thenReturn(Optional.empty());
-        DatabaseException ex = assertThrows(DatabaseException.class, () ->{
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () ->{
                 service.addFavorsFilms(user, filmId);}
             ); 
         assertEquals("Movie with id: " + filmId +" not exists.", ex.getMessage());
